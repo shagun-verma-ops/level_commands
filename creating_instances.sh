@@ -1,4 +1,5 @@
 #!/bin/bash
+#In this shell , we are going to demonstrate how we can automate ec2 creation by calling aws api 
 ##################################  VARIABLES  #####################################
 read -p "Please enter AWS region. (Please enter to select default) :- " region_aws 
 region_aws=${region_aws:-$(aws configure get region --output text)}
@@ -22,6 +23,7 @@ select ami_Id in "${ami_list[@]}"
 do
 ami_id=$(awk '{print $2}' <<< "$ami_Id")
 echo -e "\033[0;32m You have selected the windows image type and its imid is ${ami_id}.\033[0m "
+break ;
 done
 break ;
 ;;
@@ -92,7 +94,6 @@ keyname=${keyname:-default}
 echo -e "\033[0;32m Your key pair name for the instances is ${keyname} \033[0m"
 read -p "Please enter the security group name.(Enter for default sgid) :- " sgname
 sgname=${sgname:-Default}
-read -p "Please enter the name for ec2 instance :- " Name_ec2 
 ####################################################################################
 ##################################  FUNCTIONS  #####################################
 function aws_instance_creating (){
@@ -103,10 +104,10 @@ aws ec2 run-instances \
  --region ${region_aws} \
  --profile ${username} \
  --key-name ${keyname} \
- --security-groups ${sgname} \
- --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=${Name_ec2}}]" 
+ --security-groups ${sgname} 
 sleep 2
-echo -e "\033[0;32m THE OPERATION TO RUN CUSTOM EC2 INSTANCE HAS BEEN SUCCESSFUL \033[0m"
 }
 ####################################################################################
 aws_instance_creating >> /dev/null
+echo -e "\033[0;32m THE OPERATION TO RUN CUSTOM EC2 INSTANCE HAS BEEN SUCCESSFUL \033[0m"
+#This module can also be used in other master shell with wider scope for cloud operations.
